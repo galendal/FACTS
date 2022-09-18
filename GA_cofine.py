@@ -2,6 +2,7 @@ import numpy as np
 from sklearn.utils.extmath import randomized_svd
 import xarray as xr
 import matplotlib.pyplot as plt
+import scipy as sc
 
 class GA_cofine:
     # init method or constructor
@@ -31,7 +32,7 @@ class GA_cofine:
 
         Cmat=(np.transpose(u.data)@v.data)
 
-        U,L,Vt=np.linalg.svd(Cmat)
+        U,L,Vt=sc.linalg.svd(Cmat)
         V=Vt.T
         SCF=L/np.sum(L)
         indx=int(np.argwhere(np.cumsum(SCF)>self.tresh)[0])+1
@@ -149,9 +150,9 @@ class GA_cofine:
         rho=self.calc_PCS(self.coarse.norm).var(dim='time')
 
         Bn=self.calc_PCS(infield)
-        rho_n=rho#Bn.var(dim='time')
-        
-        Anest=np.diag(self.L.data)@np.linalg.pinv(Bn)).T#@(np.diag(rho/rho_n)@np.diag(self.L.data))) #np.linalg.pinv(B6).T@np.diag(L)
+        rho_n=Bn.var(dim='time')
+        print(rho/rho_n)
+        Anest=((np.diag(self.L.data)@np.linalg.pinv(Bn)).T)@(np.diag(rho/rho_n)) #np.linalg.pinv(B6).T@np.diag(L)
         #Anest=((infield.sizes['time']-1)/(self.coarse.dims['time']-1))**(1/2)*(np.diag(self.L.data)@np.linalg.pinv(Bn.data)).T
 
         out=xr.DataArray(data=Anest, dims=['time','mode']).assign_coords(time=outtime)
@@ -175,7 +176,7 @@ class GA_cofine:
             
 
         outtime=infield.time
-        A=calc_PCS(infield)
+        A=self.calc_PCS(infield)
         out=xr.DataArray(data=A.data@MAT.T, dims=['time','z']).assign_coords(time=outtime).assign_coords(z=z)
         #    (['time'],outtime)
         #    ))
