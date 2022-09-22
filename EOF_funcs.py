@@ -71,7 +71,7 @@ def my_svd_randomized(data, tname='time', uname='u', vname='v', spacename=['Y','
     tmp[vname+'_pcs']=((tname,'mode'),B)
     tmp[uname+'_eofs']=((u_mean.dims + ('mode',)),U)#,compat='override')
     tmp[vname+'_eofs']=((v_mean.dims + ('mode',)),V)#,compat='override')
-    
+    tmp.assign_coords(mode=('mode',np.arange(N)))
     
     
     #out['speed']=np.sqrt(out.u**2+out.v**2)
