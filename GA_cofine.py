@@ -29,8 +29,9 @@ class GA_cofine:
         u=stmp.norm.where(stmp.land_mask==0,drop=True).dropna(dim='z') #data.u_norm.where(data.land_binary_mask==0).dropna(dim=spacename).data#+focus.vcent.data*1j
         stmp=coarse#.stack(z=['comp','X','Y'])
         v=stmp.norm.where(stmp.land_mask==0,drop=True).dropna(dim='z')
-
-        Cmat=(np.transpose(u.data)@v.data)
+        N=data.sizes['time']
+        
+        Cmat=(np.transpose(u.data)@v.data)/(N-1)
 
         U,L,Vt=sc.linalg.svd(Cmat)
         V=Vt.T
