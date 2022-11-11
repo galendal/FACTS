@@ -46,8 +46,6 @@ def find_nearest(xd, pos=[60.645556,3.726389]): # Default to Troll
     ([xloc], [yloc]) = np.where(c == np.min(c))
     return [xloc,yloc]
 
-
-
 def crop_depth(inxarr):
     tmpu=(~np.isnan(inxarr.u_eastward)).cumsum(dim='depth').argmax(dim='depth')
     tmpv=(~np.isnan(inxarr.v_northward)).cumsum(dim='depth').argmax(dim='depth')
